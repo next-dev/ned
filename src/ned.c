@@ -7,13 +7,14 @@
 // Video API
 void initVideo();
 void initKeys();
+void test();
 
 int main()
 {
     initVideo();
     initKeys();
+    test();
 
-    for(;;);
     return 0;
 }
 
