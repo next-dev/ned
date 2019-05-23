@@ -7,7 +7,7 @@ CC=zcc
 BUILDFLAGS=
 INCFLAGS=
 LDFLAGS=
-CCFLAGS=+zxn -O3 -clib=new
+CCFLAGS=+zxn -vn -O3 -clib=new
 
 CCLINKFLAGS=$(CCFLAGS) -startup=31
 
@@ -20,7 +20,7 @@ OBJ=ned.o video.o keyboard.o
 	$(CCC1) -c -o $@ $< -subtype=nex
 
 ned.nex: $(OBJ)
-	$(CCC2) $^ -o $@ -subtype=nex -create-app
+	$(CCC2) $^ -o ned -subtype=nex -create-app
 
 clean:
 	rm -f *.o *.bin *.nex zcc_opt.def *.lis src/*.lis
