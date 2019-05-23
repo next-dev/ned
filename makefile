@@ -7,23 +7,23 @@ CC=zcc
 BUILDFLAGS=
 INCFLAGS=
 LDFLAGS=
-CCFLAGS=+zxn -vn -O3 -startup=31 -clib=new
+CCFLAGS=+zxn -O3 -clib=new
 
-CCLINKFLAGS=$(CCFLAGS)
+CCLINKFLAGS=$(CCFLAGS) -startup=31
 
-CCC1=$(CC) $(CCFLAGS) $(DEBUG) $(INCFLAGS)
-CCC2=$(CC) $(CCLINKFLAGS) $(DEBUG) $(LDFLAGS) $(BUILDFLAGS) -Cz"--clean --fullsize --main-fence 0xc000"
+CCC1=$(CC) $(CCFLAGS) $(DEBUGFLAGS) $(INCFLAGS)
+CCC2=$(CC) $(CCLINKFLAGS) $(DEBUGFLAGS) $(LDFLAGS) $(BUILDFLAGS) -Cz"--clean --fullsize --main-fence 0xc000"
 
 OBJ=ned.o video.o keyboard.o
 
 %.o: src/%.c
-	$(CCC1) -c -o$@ $<
+	$(CCC1) -c -o $@ $< -subtype=nex
 
 ned.nex: $(OBJ)
 	$(CCC2) $^ -o $@ -subtype=nex -create-app
 
 clean:
-	rm -f *.o *.bin *.nex zcc_opt.def
+	rm -f *.o *.bin *.nex zcc_opt.def *.lis src/*.lis
 
 
 
