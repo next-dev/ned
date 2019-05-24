@@ -10,7 +10,6 @@ void initKeys();
 
 int main()
 {
-    for(;;);
     initVideo();
     initKeys();
 

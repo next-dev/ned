@@ -7,13 +7,13 @@
 ;;
 ;;----------------------------------------------------------------------------------------------------------------------
 
-SECTION interrupt_vector
+SECTION code_user
+                org     $8000
 
                 defs    257,$81         ; Interrupt vector table
 
-BUFFERPAGE      equ     $83
+BUFFERPAGE      equ     $84
 
-SECTION code_user
 PUBLIC _initKeys, _doneKeys
 
 _initKeys:
