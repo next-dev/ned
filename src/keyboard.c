@@ -1,6 +1,0 @@
-// Keyboard driver
-
-void initKeys()
-{
-
-}
