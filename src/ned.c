@@ -3,14 +3,12 @@
 // Common headers
 #include <arch/zxn.h>
 #include <intrinsic.h>
+#include <ned.h>
 
-// Keyboard
-extern unsigned char Key;
-extern unsigned char KFlags;
-extern unsigned short Counter;
 
-// Video API
-void initVideo();
+//
+// Main entry point
+//
 
 int main()
 {
