@@ -7,27 +7,22 @@
 ;;
 ;;----------------------------------------------------------------------------------------------------------------------
 
-SECTION code_user
+BUFFERPAGE      equ     $82
+
+SECTION interrupt_table
                 org     $8000
 
+ImTable:
                 defs    257,$81         ; Interrupt vector table
 
-BUFFERPAGE      equ     $84
 
-PUBLIC _initKeys, _doneKeys
+SECTION code_crt_init
 
-_initKeys:
                 di
-                ld      a,$80
+                ld      a,ImTable/256
                 ld      i,a
                 im      2
                 ei
-                ret
-
-_doneKeys:       di
-                im      1
-                ei
-                ret
 
 ; Scans the keyboard and returns button code - runs in IM 2
 ;
@@ -73,7 +68,11 @@ _doneKeys:       di
 SECTION ISR
                 org     $8181
 
-ImRoutine:
+ImRoutine:      jp      KeyService
+
+SECTION code_user
+
+KeyService:
                 di
                 push    af
                 push    bc
@@ -132,25 +131,25 @@ end_row:        ld      a,5
                 djnz    row
 
                 ; Fetch a character
-                ld      hl,KFlags
+                ld      hl,_KFlags
                 bit     0,(hl)
                 jr      nz,finish      ; Still haven't processed last key yet
 
                 ld      b,BUFFERPAGE
                 call    BufferRead
                 jr      z,no_chars
-                ld      (Key),a         ; Next key available
+                ld      (_Key),a         ; Next key available
                 set     0,(hl)          ; Key ready!
                 jr      finish
 
 no_chars:       xor     a
-                ld      (Key),a
+                ld      (_Key),a
 
 finish:
                 ; Advance counter
-                ld      hl,(Counter)
+                ld      hl,(_Counter)
                 inc     hl
-                ld      (Counter),hl
+                ld      (_Counter),hl
                 pop     ix
                 pop     hl
                 pop     de
@@ -194,9 +193,11 @@ l1:             ld      d,(hl)          ; Get old state
 
 ;;----------------------------------------------------------------------------------------------------------------------
 
-Key:            defb    0               ; Latest ASCII character
-KFlags:         defb    0               ; Bit 0 = character available, reset when test
-Counter:        defw    0               ; 50/60Hz counter
+PUBLIC _Key, _KFlags, _Counter
+
+_Key:           defb    0               ; Latest ASCII character
+_KFlags:        defb    0               ; Bit 0 = character available, reset when test
+_Counter:       defw    0               ; 50/60Hz counter
 
 ;;----------------------------------------------------------------------------------------------------------------------
 
@@ -306,4 +307,11 @@ BufferRead:     ; Input:
                 and     a               ; Clear ZF
 EmptyBuffer:    pop     hl
                 ret
+
+;;----------------------------------------------------------------------------------------------------------------------
+
+SECTION KeyBuffer
+org $8200
+
+KeyBuffer:      defs    256
 
