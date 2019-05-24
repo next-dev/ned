@@ -4,6 +4,15 @@
 
 #pragma once
 
+#ifdef __SCCZ80
+#   define BREAK asm("defw 0x01dd\n")
+#else
+#   define BREAK \
+        __asm \
+        defw 0x01dd \
+        __endasm;
+#endif
+
 //
 // Basic types
 //
