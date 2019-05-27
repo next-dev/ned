@@ -1,3 +1,3 @@
 @echo off
 make
-bin\CSpect.exe -brk -s14 -w3 -sound -zxnext -mmc=bin ned.nex
+bin\CSpect.exe -sound -brk -s14 -w3 -zxnext -nextrom -mmc=\sdcard\cspect-next-16gb.img

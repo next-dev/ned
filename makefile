@@ -14,28 +14,25 @@ CCFLAGS=+zxn -vn -O3 -clib=new -Isrc
 CCLINKFLAGS=$(CCFLAGS) -startup=31
 
 CCC1=$(CC) $(CCFLAGS) $(DEBUGFLAGS) $(INCFLAGS)
-CCC2=$(CC) $(CCLINKFLAGS) $(DEBUGFLAGS) $(LDFLAGS) $(BUILDFLAGS) -Cz"--clean --fullsize --main-fence 0xc000"
+CCC2=$(CC) $(CCLINKFLAGS) $(DEBUGFLAGS) $(LDFLAGS) $(BUILDFLAGS) -Cz"--clean --fullsize"
 
 # Source set up
 
 ODIR = obj
 
 _DEPS = ned.h
-_OBJ = ned.o video.o keyboard.o
+_OBJ = ned.o video.o keyboard.o font.o display.o data.o memory.o
 
 DEPS = $(patsubst %,src/%,$(_DEPS))
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-ned.nex: $(OBJ)
-	$(CCC2) $^ -o ned -pragma-include:src/zpragma.inc -subtype=nex -create-app
+ned.nex: $(ODIR) $(OBJ)
+	$(CCC2) $(OBJ) -o ned -pragma-include:src/zpragma.inc -subtype=nex -create-app
 
-$(ODIR):
-	mkdir $(ODIR)
-
-$(ODIR)/%.o: src/%.c $(DEPS) $(ODIR)
+$(ODIR)/%.o: src/%.c $(DEPS)
 	$(CCC1) -c -o $@ $<
 
-$(ODIR)/%.o: src/%.asm $(ODIR)
+$(ODIR)/%.o: src/%.asm
 	$(CCC1) -c -o $@ $<
 
 .PHONY: clean
@@ -43,5 +40,8 @@ $(ODIR)/%.o: src/%.asm $(ODIR)
 clean:
 	rm -f *.o *.bin *.nex zcc_opt.def *.lis src/*.lis
 	rm -rf $(ODIR)
+
+$(ODIR):
+	mkdir $(ODIR)
 
 

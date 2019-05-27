@@ -4,7 +4,9 @@
 #include <arch/zxn.h>
 #include <intrinsic.h>
 #include <ned.h>
+#include <memory.h>
 
+extern u8* testFile;
 
 //
 // Main entry point
@@ -14,14 +16,14 @@ int main()
 {
     initVideo();
 
+    BREAK;
+    u8 handle = arenaNew();
+
     for(;;)
     {
-        if (KFlags & 1)
-        {
-            *(unsigned char *)0x4000 = Key;
-            KFlags &= ~1;
-        }
+        displayScreen();
     }
+
     return 0;
 }
 

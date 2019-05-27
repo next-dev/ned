@@ -35,7 +35,6 @@ void setColour(u8 slot, u8 paper, u8 ink)
 
 void initVideo()
 {
-    BREAK;
     zx_border(INK_BLACK);
     zx_cls(INK_WHITE+PAPER_BLACK);
 
@@ -50,7 +49,5 @@ void initVideo()
     ZXN_NEXTREG(0x6f,0x20);     // Tiles base offset
     ZXN_NEXTREG(0x4c,8);        // Transparency colour (bright black)
     ZXN_NEXTREG(0x68,0x80);     // Disable ULA output
-
-    *(u8 *)0x6000 = 0x11;
 }
 
