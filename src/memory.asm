@@ -6,7 +6,7 @@
 
 SECTION code_user
 
-PUBLIC _arenaNew, _arenaDone
+PUBLIC _arenaNew, _arenaDone, _arenaPageAlign, _arenaAlloc, _arenaPrepare
 EXTERN _ZXN_WRITE_MMU6
 
 IDE_BANK        equ     $01bd
@@ -149,3 +149,58 @@ arenaDone_L1:
                 pop     af
                 ret
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; arenaPageAlign(u8 handle) -> page
+;;
+;; Input:
+;;      L = handle
+;; Output:
+;;      L = page # of new page
+;;
+
+_arenaPageAlign:
+                push    af
+                push    de
+                push    hl
+
+                ld      a,l             ; A = page #
+                nextreg $56,a           ; Switch to it so we can see the meta-data
+                ld      h,$c0           ; HL = address in page table
+                call    allocPage       ; A = new page # or 0
+                and     a
+                jr      z,allocPage_error
+
+                ld      e,a             ; Store new page #
+                ld      a,l
+                nextreg $56,a           ; Ensure header page is in
+                ld      a,(ARENAHDR_NUMPAGES)
+                ld      l,a             ; HL = entry in page table
+                ld      (hl),e          ; Add new page in page table
+                inc     a               ; We have one more page!
+                ld      (ARENAHDR_NUMPAGES),a
+                ld      hl,ARENAHDR_NEXTOFFSET
+                ld      (hl),0          ; Next free address in at beginning of page
+                ld      a,e             ; A = page #
+                ld      (ARENAHDR_NEXTPAGE),a
+
+                nextreg $56,a           ; Switch to that page (as a convenience)
+
+allocPage_error:
+                ld      l,a
+                pop     de
+                ld      h,d
+                pop     de
+                pop     af
+                ret
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; arenaAlloc(u8 handle, u16 size) -> address
+
+_arenaAlloc:
+                ret
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; arenaPrepare(u32 address)
+
+_arenaPrepare:
+                ret

@@ -16,8 +16,9 @@ int main()
 {
     initVideo();
 
-    BREAK;
     u8 handle = arenaNew();
+    BREAK;
+    u8 page = arenaPageAlign(handle);
     arenaDone(handle);
 
     for(;;)
