@@ -18,6 +18,7 @@ int main()
 
     BREAK;
     u8 handle = arenaNew();
+    arenaDone(handle);
 
     for(;;)
     {

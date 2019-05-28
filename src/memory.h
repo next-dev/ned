@@ -17,14 +17,14 @@
 //      0       224     The pages that comprise this arena.
 //      224     1       The number of pages in the arena
 //      225     3       The current 24-bit address offset into the arena of the next allocation.
-//      226             First free byte of arena
+//      228             First free byte of arena
 //
 // Returns a handle.
 
-u8 arenaNew() __preserves_regs(a,b,c,h,l) __z88dk_fastcall;
+u8 arenaNew() __preserves_regs(a,b,c,d,e,h) __z88dk_fastcall;
 
 // Destroy an arena
-void arenaDone(u8 handle);
+void arenaDone(u8 handle) __preserves_regs(a,b,c,d,e,h,l) __z88dk_fastcall;
 
 // Align to page - this means the next allocation will be at the start of an 8K buffer.
 void arenaPageAlign(u8 handle);
