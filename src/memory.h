@@ -44,5 +44,5 @@ u8 arenaPageAlign(u8 handle) __preserves_regs(a,b,c,d,e,h) __z88dk_fastcall;
 u32 arenaAlloc(u8 handle, u16 size) __preserves_regs(a,b,c);
 
 // Prepare an allocation by ensuring that the allocation is paged into MMU 6 ($c000-$dfff);
-u8* arenaPrepare(u32 address);
+u8* arenaPrepare(u32 address) __preserves_regs(a,b,c) __z88dk_fastcall;
 

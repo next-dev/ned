@@ -286,7 +286,23 @@ arenaAlloc_error:
                 ret
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; arenaPrepare(u32 address)
+;; arenaPrepare(u32 address) -> u8*
+;;
+;; Input:
+;;      DEHL = address
+;; Output:
+;;      HL = real address
 
 _arenaPrepare:
+                ; At this point E contains the page number and HL the offset into range $c000-$bfff.
+                push    af
+                ld      a,e
+                nextreg $56,a
+
+                ld      a,h
+                add     a,$c0
+                ld      h,a             ; HL += $c000
+
+                pop     af
                 ret
+

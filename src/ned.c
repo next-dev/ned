@@ -17,8 +17,18 @@ int main()
     initVideo();
 
     u8 handle = arenaNew();
-    u32 p = arenaAlloc(handle, 8192-229);
-    display32(0, 0, p, 0);
+    BREAK;
+    u32 p1 = arenaAlloc(handle, 8000);
+    u32 p2 = arenaAlloc(handle, 8000);
+
+    BREAK;
+    u8* a1 = arenaPrepare(p1);
+    display16(0, 0, (u16)a1, 0);
+    BREAK;
+    u8* a2 = arenaPrepare(p2);
+    display16(0, 1, (u16)a2, 0);
+    BREAK;
+
     arenaDone(handle);
 
     for(;;)
