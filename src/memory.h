@@ -41,7 +41,7 @@ u8 arenaPageAlign(u8 handle) __preserves_regs(a,b,c,d,e,h) __z88dk_fastcall;
 
 // Allocate memory, expanding the arena by a page if necessary.  This will guarantee that an allocation will
 // not cross an 8K page boundary.  Return a 24-bit virtual address.  The maximum allocation size is 8K.
-u32 arenaAlloc(u8 handle, u16 size) __preserves_regs(a,b,c);
+u32 arenaAlloc(u8 handle, u16 size) __preserves_regs(a,b,c) __z88dk_callee;
 
 // Prepare an allocation by ensuring that the allocation is paged into MMU 6 ($c000-$dfff);
 u8* arenaPrepare(u32 address) __preserves_regs(a,b,c) __z88dk_fastcall;

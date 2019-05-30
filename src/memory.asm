@@ -199,12 +199,11 @@ allocPage_error:
 ;; arenaAlloc(u8 handle, u16 size) -> address
 
 _arenaAlloc:
-                pop     bc                              ; BC = return address
-                pop     de                              ; E = handle
+                pop     hl                              ; HL = return address
                 dec     sp
-                pop     hl                              ; HL = size
+                pop     de                              ; D = handle
+                ex      (sp),hl                         ; HL = size, return address back on stack
 
-                push    bc                              ; Restore return address
                 push    af
                 push    bc
 
@@ -215,7 +214,7 @@ _arenaAlloc:
                 jr      nz,arenaAlloc_error
 
                 ; Obtain how much space on the current page
-                ld      a,e
+                ld      a,d
                 nextreg $56,a                           ; Switch to first page
                 ld      a,(ARENAHDR_NEXTOFFSET)
                 ld      c,a
@@ -236,7 +235,7 @@ _arenaAlloc:
 
 arenaAlloc_nospace:
                 ; Otherwise, we need to add a new page
-                ld      l,e                             ; L = handle
+                ld      l,d                             ; L = handle
                 call    _arenaPageAlign                 ; L = handle of new page
                 pop     hl                              ; HL = size (and also LSB of address)
                 ld      bc,0
@@ -248,7 +247,7 @@ arenaAlloc_alloc:
 arenaAlloc_continue:
                 ; At this point HL is the new offset in the latest page and BC is the beginning of the
                 ; allocated memory.
-                ld      a,e
+                ld      a,d
                 nextreg $56,a                           ; Go back to first page
                 push    af                              ; Store handle
 
@@ -276,6 +275,7 @@ arenaAlloc_continue:
 
 arenaAlloc_end:
                 pop     af
+arenaAlloc_done:
                 pop     bc
                 pop     af
                 ret
@@ -283,6 +283,7 @@ arenaAlloc_end:
 arenaAlloc_error:
                 ld      hl,0
                 ld      de,0
+                jr      arenaAlloc_done
                 ret
 
 ;;----------------------------------------------------------------------------------------------------------------------
