@@ -1,6 +1,6 @@
 ./*.bin
 *.o
-*.nex
+/*.nex
 zcc_opt.def
 *.lis
 
