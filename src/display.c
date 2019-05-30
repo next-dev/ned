@@ -2,7 +2,7 @@
 // Low-level routines to control the display
 //
 
-#include <ned.h>
+#include "ned.h"
 #include <intrinsic.h>
 
 const u8 EOL = 0x0d;

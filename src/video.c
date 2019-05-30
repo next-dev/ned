@@ -1,6 +1,6 @@
 // Video driver
 #include <arch/zxn.h>
-#include <ned.h>
+#include "ned.h"
 
 u8 kPaletteColours[] = {
     0x00,

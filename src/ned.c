@@ -3,8 +3,8 @@
 // Common headers
 #include <arch/zxn.h>
 #include <intrinsic.h>
-#include <ned.h>
-#include <memory.h>
+#include "ned.h"
+#include "memory.h"
 
 extern u8* testFile;
 
