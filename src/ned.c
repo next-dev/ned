@@ -17,15 +17,13 @@ int main()
     initVideo();
 
     u8 handle = arenaNew();
-    BREAK;
-    u8 page = arenaPageAlign(handle);
+    u32 p = arenaAlloc(handle, 8192-229);
+    display32(0, 0, p, 0);
     arenaDone(handle);
 
     for(;;)
     {
-        displayScreen();
+        //displayScreen();
     }
-
-    return 0;
 }
 

@@ -7,9 +7,14 @@ DEBUGFLAGS := --list --c-code-in-asm
 CC=zcc
 
 BUILDFLAGS=
-INCFLAGS=
+INCFLAGS=-Isrc
 LDFLAGS=
-CCFLAGS=+zxn -vn -O3 -clib=new -Isrc
+
+# SCCZ80 compiler
+#CCFLAGS=+zxn -vn -O3 -clib=new
+
+# ZSDCC compiler (optimising one)
+CCFLAGS=+zxn -vn -clib=sdcc_iy -SO3 --opt-code-size --max-allocs-per-node200000
 
 CCLINKFLAGS=$(CCFLAGS) -startup=31
 

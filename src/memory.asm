@@ -100,7 +100,7 @@ _arenaNew:
                 nextreg $56,a
                 ld      a,1
                 ld      (ARENAHDR_NUMPAGES),a           ; Store number of pages
-                ld      hl,224
+                ld      hl,228
                 ld      (ARENAHDR_NEXTOFFSET),hl        ; Store 2 LSB of big pointer
                 ld      a,e
                 ld      (ARENAHDR_PAGES),a              ; Store first page number in chain
@@ -180,6 +180,8 @@ _arenaPageAlign:
                 ld      (ARENAHDR_NUMPAGES),a
                 ld      hl,ARENAHDR_NEXTOFFSET
                 ld      (hl),0          ; Next free address in at beginning of page
+                inc     hl
+                ld      (hl),0
                 ld      a,e             ; A = page #
                 ld      (ARENAHDR_NEXTPAGE),a
 
@@ -197,6 +199,90 @@ allocPage_error:
 ;; arenaAlloc(u8 handle, u16 size) -> address
 
 _arenaAlloc:
+                pop     bc                              ; BC = return address
+                pop     de                              ; E = handle
+                dec     sp
+                pop     hl                              ; HL = size
+
+                push    bc                              ; Restore return address
+                push    af
+                push    bc
+
+                ; Fetch  parameters
+                ; Check to see if the size is <= 8K
+                ld      a,h
+                and     $e0                             ; Top 3 bits should be 0
+                jr      nz,arenaAlloc_error
+
+                ; Obtain how much space on the current page
+                ld      a,e
+                nextreg $56,a                           ; Switch to first page
+                ld      a,(ARENAHDR_NEXTOFFSET)
+                ld      c,a
+                ld      a,(ARENAHDR_NEXTOFFSET+1)
+                ld      b,a                             ; BC = number of bytes used in latest page
+                push    hl                              ; Store size
+                add     hl,bc                           ; Number of bytes + size <= 8K?
+
+                ; Make sure HL <= $2000 (8K), because if not, we need to allocate a new page and start
+                ; the allocation there
+                ld      a,h
+                cp      $20
+                jr      c,arenaAlloc_alloc              ; < 8K so continue allocating
+                jr      nz,arenaAlloc_nospace           ; > 8K so require new page
+                ld      a,l
+                and     a
+                jr      z,arenaAlloc_alloc              ; == 8K so continue allocating
+
+arenaAlloc_nospace:
+                ; Otherwise, we need to add a new page
+                ld      l,e                             ; L = handle
+                call    _arenaPageAlign                 ; L = handle of new page
+                pop     hl                              ; HL = size (and also LSB of address)
+                ld      bc,0
+                jr      arenaAlloc_continue
+
+arenaAlloc_alloc:
+                pop     af                              ; Drop the value pushed on the stack
+
+arenaAlloc_continue:
+                ; At this point HL is the new offset in the latest page and BC is the beginning of the
+                ; allocated memory.
+                ld      a,e
+                nextreg $56,a                           ; Go back to first page
+                push    af                              ; Store handle
+
+                ld      a,l
+                ld      (ARENAHDR_NEXTOFFSET),a
+                ld      a,h
+                ld      (ARENAHDR_NEXTOFFSET+1),a       ; Store the new address
+                ld      d,0
+                ld      a,(ARENAHDR_NEXTPAGE)
+                ld      e,a
+                ld      h,b
+                ld      l,c                             ; DEHL = address of memory
+
+                ; Check to see if memory allocation exactly fills up the page, if so create new one
+                ld      a,(ARENAHDR_NEXTOFFSET+1)
+                and     $e0                             ; Filled up page?
+                jr      z,arenaAlloc_end
+
+                pop     af
+                push    hl
+                ld      l,a
+                call    _arenaPageAlign
+                pop     hl                              ; DEHL = still address of memory
+                push    af
+
+arenaAlloc_end:
+                pop     af
+                pop     bc
+                pop     af
+                ret
+
+arenaAlloc_error:
+                ld      hl,0
+                ld      de,0
                 ret
 
 ;;----------------------------------------------------------------------------------------------------------------------

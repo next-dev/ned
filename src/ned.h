@@ -54,6 +54,9 @@ void clearArea(u8 x, u8 y, u8 width, u8 height, u8 colour);
 void write(u8 x, u8 y, u8 colour, const char* text);
 void displayScreen();
 void displayRow(u8 sy, u32 pos);
+void display32(u8 x, u8 y, u32 p, u8 colour);
+void display16(u8 x, u8 y, u16 p, u8 colour);
+void display8(u8 x, u8 y, u8 p, u8 colour);
 
 //----------------------------------------------------------------------------------------------------------------------
 // Editor state
