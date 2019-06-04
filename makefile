@@ -33,7 +33,7 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 ned.nex: $(ODIR) $(OBJ)
 	$(CCC2) $(OBJ) -o ned -pragma-include:src/zpragma.inc -subtype=nex -create-app
-	bin/hdfmonkey put \sdcard\cspect-next-16gb.img ned.nex
+	bin/hdfmonkey put \sdcard\cspect-next-2gb.img ned.nex
 
 $(ODIR)/%.o: src/%.c $(DEPS)
 	$(CCC1) -c -o $@ $<
