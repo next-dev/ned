@@ -84,7 +84,7 @@ void displayScreen()
 void displayN(u8 x, u8 y, u32 p, int n, u8 colour)
 {
     u8* scr = calcTileAddress(x, y) + (n * 2);
-    for (; n >= 0; --n)
+    for (; n > 0; --n)
     {
         u8 nib = (p & 0xf);
         p >>= 4;

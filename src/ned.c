@@ -14,9 +14,9 @@ extern u8* testFile;
 
 int main()
 {
-    u8 handle;
     u32 p1, p2;
     u8 *a1, *a2;
+    u8 handle;
 
     initVideo();
 
@@ -31,7 +31,6 @@ int main()
     BREAK;
     a2 = arenaPrepare(p2);
     display16(0, 1, (u16)a2, 0);
-    BREAK;
 
     arenaDone(handle);
 
